@@ -27,7 +27,8 @@ app.post('/users', (request, response) => {
   const user = new User({
     email: request.body.email,
     password: request.body.password,
-    password_confirmation: request.body.password_confirmation
+    password_confirmation: request.body.password_confirmation,
+    username: request.body.username
   });
   console.log('pass', user.password_confirmation);
   user.save(err => {

@@ -1,20 +1,37 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-/*  MODELO */
-
 mongoose.connect("mongodb://localhost:27017/fotos",  {useNewUrlParser: true })
 .then(() => console.log('MongoDB Connected'))
 .catch((err) => console.log(err));
 
 const posibles_valores = ['M', 'F'];
-const email_match = [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Coloca un email válido']
+const email_match = [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Coloca un email válido'];
+const password_validation = {
+  validator: function(p){
+    // p es un passord que está tratando de acceder
+    return this.password_confirmation == p;
+  },
+  message: "Las contraseñas no coinciden"
+}
 
 const user_schema = new Schema({
   name: String,
-  username: {type:String, required: true, maxlength:[50, 'Username muy grande']},
-  password: {type:String, minlength: [8, "el password es muy corto"]},
-  age: {type: Number, min: [5, 'La edad no puede ser menor qie 5'], max: [100, 'la edad no puede ser mayor que 100']},
+  username: {
+    type:String,
+    required: true, 
+    maxlength:[50, 'Username muy grande']
+  },
+  password: {
+    type:String,
+    minlength: [8, "el password es muy corto"],
+    validate: password_validation
+  },
+  age: {
+    type: Number, 
+    min: [5, 'La edad no puede ser menor qie 5'],
+    max: [100, 'la edad no puede ser mayor que 100']
+  },
   email: {type: String, required: "Correo obligatorio", match: email_match},
   date_of_birth: Date,
   sex: {type: String, enum: {values: posibles_valores, message: "Opción no válida"}}
