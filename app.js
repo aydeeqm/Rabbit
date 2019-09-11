@@ -1,21 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const User = require('./models/user').User;
 const app = express();
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
-mongoose.connect("mongodb://localhost:27017/fotos",  {useNewUrlParser: true })
-.then(() => console.log('MongoDB Connected'))
-.catch((err) => console.log(err));;
-
-const userSchemaJSON = {
-  email: String,
-  password: String
-};
-
-const user_schema = new Schema(userSchemaJSON);
-
-const User = mongoose.model("User", user_schema);
+// Collecciones => tablas
+// Documentos => filas
 
 app.use('/public',express.static('public'));
 app.use(bodyParser.json()); // para peticiones aplicacion/json
@@ -37,9 +26,14 @@ app.get('/login', (request, response) => {
 app.post('/users', (request, response) => {
   const user = new User({
     email: request.body.email,
-    password: request.body.password
+    password: request.body.password,
+    password_confirmation: request.body.password_confirmation
   });
-  user.save(() => {
+  console.log('pass', user.password_confirmation);
+  user.save(err => {
+    if(err) {
+      console.log(String(err));
+    }
     response.send('Recibimos tus datos');
   });
 });
