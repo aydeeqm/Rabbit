@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const User = require('./models/user').User;
+const session = require('express-session');
+
 const app = express();
 
 // Collecciones => tablas
@@ -9,6 +11,7 @@ const app = express();
 app.use('/public',express.static('public'));
 app.use(bodyParser.json()); // para peticiones aplicacion/json
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(session());
 
 app.set('view engine', 'pug')
 
@@ -16,11 +19,15 @@ app.get('/', (request, response) => {
   response.render('index', { message: 'Hello there!' })
 });
 
-app.get('/login', (request, response) => {
+app.get('/signup', (request, response) => {
   User.find((err, doc) => {
     console.log(doc);
-    response.render('login');
+    response.render('signup');
   });
+});
+
+app.get('/login', (request, response) => {
+  response.render('login');
 });
 
 app.post('/users', (request, response) => {
@@ -30,13 +37,25 @@ app.post('/users', (request, response) => {
     password_confirmation: request.body.password_confirmation,
     username: request.body.username
   });
-  console.log('pass', user.password_confirmation);
-  user.save(err => {
-    if(err) {
-      console.log(String(err));
-    }
+  
+  user.save().then((us) => {
     response.send('Recibimos tus datos');
-  });
+  }).catch((err) => {
+    console.log(String(err));
+    response.send('Hubo un error :(')
+  })
+
+});
+
+app.post('/sessions', (request, response) => {
+  // params: query, fields, callback
+  User.findOne({
+    email: request.body.email,
+    password: request.body.password,
+  }, function(err, doc){
+    console.log(doc);
+    response.send('Hola mundo')
+  }) 
 });
 
 app.listen('8080', () => {
