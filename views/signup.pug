@@ -15,5 +15,8 @@ block contenido
       div
         label(for="username") Username
         input(type="text", name="username", id="username", class="form-control" placeholder="Nombre de usuario")
-      div(class="top-space")
-        button(type="submit", class="btn btn-info") Iniciar sesión
+      div(class="row top-space")
+        div(class="col-xs-12 col-md-6")
+          button(type="submit", class="btn btn-info") Iniciar sesión
+        div(class="col-xs-12 col-md-6 text-right")
+          a(href="/login") Ya tengo una cuenta

@@ -58,10 +58,10 @@ app.post('/sessions', (request, response) => {
   User.findOne({
     email: request.body.email,
     password: request.body.password,
-  }, function(err, doc){
-    console.log(doc);
+  }, function(err, user){
+    console.log(user);
     request.session.user_id = user._id;
-    response.send('Hola mundo')
+    response.redirect('/app')
   }) 
 });
 
