@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const User = require('./models/user').User;
 const session = require('express-session');
+const router_app = require('./routes_app');
+const session_middleware = require('./middlewares/session');
 
 const app = express();
 
@@ -11,7 +13,11 @@ const app = express();
 app.use('/public',express.static('public'));
 app.use(bodyParser.json()); // para peticiones aplicacion/json
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(session());
+app.use(session({
+  secret: '123sdjhs1677',
+  resave: false,
+  saveUninitialized: false,
+}));
 
 app.set('view engine', 'pug')
 
@@ -54,9 +60,13 @@ app.post('/sessions', (request, response) => {
     password: request.body.password,
   }, function(err, doc){
     console.log(doc);
+    request.session.user_id = user._id;
     response.send('Hola mundo')
   }) 
 });
+
+app.use('/app', session_middleware);
+app.use('/app', router_app);
 
 app.listen('8080', () => {
   console.log('servidor prendido');
