@@ -9,14 +9,17 @@ router.get('/', (req, res) => {
   res.render('app/home')
 });
 
-// REST
+/** REST CRUD */
+
 
 router.get('/imagenes/new', (req, res) => {
   res.render('app/imagenes/new');
 });
 
 router.get('/imagenes/:id/edit', (req, res) => {
-
+  Image.findById(req.params.id, (err, image) => {
+    res.render('app/imagenes/edit', { imagen: image });
+  });
 });
 
 router.route('/imagenes/:id')
@@ -25,11 +28,30 @@ router.route('/imagenes/:id')
       res.render('app/imagenes/show', { imagen: image });
     });
   })
-  .put((req, res) => {})
-  .delete((req, res) => {})
+  .put((req, res) => {
+    Image.findById(req.params.id, (err, image) => {
+      image.title = req.body.title;
+      image.save((err) => {
+        if(!err) {
+          res.render('app/imagenes/show', { imagen: image });
+        } else {
+          res.render(`app/imagenes/${imagen.id}/edit`, { imagen: image });
+        }
+      })
+    });
+  })
+  .delete((req, res) => {
+    // Eliminar imagenes
+    
+  })
 
 router.route('/imagenes')
-  .get((req, res) => {})
+  .get((req, res) => {
+    Image.find({}, (err, imagenes) => {
+      if(err){ res.redirect('/app'); return; }
+      res.render('app/imagenes/index', { imagenes })
+    });
+  })
   .post((req, res) => {
     const data = { title: req.body.title };
     const image = new Image(data);

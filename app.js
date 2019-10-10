@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const User = require('./models/user').User;
-const session = require('express-session');
+const cookieSession = require('cookie-session'); // express-session
 const router_app = require('./routes_app');
 const session_middleware = require('./middlewares/session');
+
+const methodOverride = require('method-override');
 
 const app = express();
 
@@ -13,10 +15,12 @@ const app = express();
 app.use('/public',express.static('public'));
 app.use(bodyParser.json()); // para peticiones aplicacion/json
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(session({
-  secret: '123sdjhs1677',
-  resave: false,
-  saveUninitialized: false,
+
+app.use(methodOverride("_method"));
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['llave-1', 'llave-2']
 }));
 
 app.set('view engine', 'pug')
