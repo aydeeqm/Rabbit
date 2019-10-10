@@ -9,8 +9,9 @@ module.exports = function(req, res, next){
     if(err) {
       console.log(err);
       res.redirect('/login');
+    } else {
+      res.locals = { user };
+      next();
     }
-    res.locals = { user };
-    next();
   });
 }
