@@ -1,5 +1,6 @@
 const express = require('express');
 const Image = require('./models/imagenes');
+const image_finder_middleware = require('./middlewares/find_image');
 
 const router = express.Router();
 
@@ -16,28 +17,24 @@ router.get('/imagenes/new', (req, res) => {
   res.render('app/imagenes/new');
 });
 
+router.all('/imagenes/:id*', image_finder_middleware);
+
 router.get('/imagenes/:id/edit', (req, res) => {
-  Image.findById(req.params.id, (err, image) => {
-    res.render('app/imagenes/edit', { imagen: image });
-  });
+  res.render('app/imagenes/edit');
 });
 
 router.route('/imagenes/:id')
   .get((req, res) => {
-    Image.findById(req.params.id, (err, image) => {
-      res.render('app/imagenes/show', { imagen: image });
-    });
+    res.render('app/imagenes/show');
   })
   .put((req, res) => {
-    Image.findById(req.params.id, (err, image) => {
-      image.title = req.body.title;
-      image.save((err) => {
-        if(!err) {
-          res.render('app/imagenes/show', { imagen: image });
-        } else {
-          res.render(`app/imagenes/${imagen.id}/edit`, { imagen: image });
-        }
-      })
+    res.locals.imagen.title = req.body.title;
+    res.locals.imagen.save((err) => {
+      if(!err) {
+        res.render('app/imagenes/show');
+      } else {
+        res.render(`app/imagenes/${res.params.id}/edit`);
+      }
     });
   })
   .delete((req, res) => {
