@@ -41,8 +41,22 @@ router.route('/imagenes/:id')
     });
   })
   .delete((req, res) => {
-    // Eliminar imagenes
+    /*
+      -- Aquí realiza dos queries--
+      Image.findById(req.params.id, (err, imagen) => {
+      // Lo que tengas que hacer con la imagen
+      imagen.remove();
+    }); */
     
+    // Eliminar imagenes
+    Image.findOneAndRemove({ _id: req.params.id }, err => {
+      if(!err) {
+        res.redirect('/app/imagenes')
+      } else {
+        console.log(err);
+        res.redirect(`/app/imagenes/${req.params.id}`)
+      }
+    })
   })
 
 router.route('/imagenes')
