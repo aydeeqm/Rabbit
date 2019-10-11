@@ -5,6 +5,10 @@ const img_schema = new Schema({
   title: {
     type: String,
     required: true,
+  },
+  creator: {
+    type: Schema.Types.ObjectId, // Like a key foranea
+    ref: 'User'
   }
 });
 

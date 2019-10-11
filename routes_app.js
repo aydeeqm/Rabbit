@@ -33,7 +33,7 @@ router.route('/imagenes/:id')
       if(!err) {
         res.render('app/imagenes/show');
       } else {
-        res.render(`app/imagenes/${res.params.id}/edit`);
+        res.render(`app/imagenes/${req.params.id}/edit`);
       }
     });
   })
@@ -58,13 +58,16 @@ router.route('/imagenes/:id')
 
 router.route('/imagenes')
   .get((req, res) => {
-    Image.find({}, (err, imagenes) => {
+    Image.find({ creator: res.locals.user._id }, (err, imagenes) => {
       if(err){ res.redirect('/app'); return; }
       res.render('app/imagenes/index', { imagenes })
     });
   })
   .post((req, res) => {
-    const data = { title: req.body.title };
+    const data = { 
+      title: req.body.title,
+      creator: res.locals.user._id
+    };
     const image = new Image(data);
     
     image.save((err) => {
