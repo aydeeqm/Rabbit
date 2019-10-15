@@ -3,7 +3,7 @@ extends ../../layout.pug
 block contenido
   div(class="col-md-6 remove-float d-block mx-auto big-top-space")
     h1 Subir nueva imagen 
-    form(action="/app/imagenes", method="post")
+    form(action="/app/imagenes", method="post" enctype="multipart/form-data")
       div(class="form-group")
         label(for="title") Título
         input(type="text", name="title", placeholder="Título de la imagen...", id="title", class="form-control")

@@ -1,6 +1,7 @@
 const express = require('express');
 const Image = require('./models/imagenes');
 const image_finder_middleware = require('./middlewares/find_image');
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -64,6 +65,8 @@ router.route('/imagenes')
     });
   })
   .post((req, res) => {
+    // console.log('req.body.archivo');
+    const extension = req.body.archivo.name.split('.').pop();
     const data = { 
       title: req.body.title,
       creator: res.locals.user._id
@@ -72,9 +75,10 @@ router.route('/imagenes')
     
     image.save((err) => {
       if(!err){
-        res.redirect(`/app/imagenes/${image._id}`)
+        fs.rename(req.body.archivo.path, `public/images/${image._id}.${extension}`);
+        res.redirect(`/app/imagenes/${image._id}`);
       } else {
-        res.render(err)
+        res.render(err);
       }
     })
   })
