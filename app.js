@@ -25,7 +25,7 @@ app.use(cookieSession({
   keys: ['llave-1', 'llave-2']
 }));
 
-app.use(formidable.parse({ keepExtensions: true }));
+app.use(formidable({ keepExtensions: true }));
 
 app.set('view engine', 'pug')
 

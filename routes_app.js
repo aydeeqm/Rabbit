@@ -66,16 +66,20 @@ router.route('/imagenes')
   })
   .post((req, res) => {
     // console.log('req.body.archivo');
-    const extension = req.body.archivo.name.split('.').pop();
+    const extension = req.files.archivo.name.split('.').pop();
     const data = { 
-      title: req.body.title,
-      creator: res.locals.user._id
+      title: req.fields.title,
+      creator: res.locals.user._id,
+      extension,
     };
     const image = new Image(data);
     
     image.save((err) => {
       if(!err){
-        fs.rename(req.body.archivo.path, `public/images/${image._id}.${extension}`);
+        fs.rename(req.files.archivo.path, `public/images/${image._id}.${extension}`, function (err) {
+          if (err) throw err;
+          console.log('renamed complete');
+        });
         res.redirect(`/app/imagenes/${image._id}`);
       } else {
         res.render(err);
