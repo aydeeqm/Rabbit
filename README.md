@@ -1,2 +1,2 @@
 # Rabbit
-App to register
+Web application to upload images in realtime.
