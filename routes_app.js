@@ -2,6 +2,9 @@ const express = require('express');
 const Image = require('./models/imagenes');
 const image_finder_middleware = require('./middlewares/find_image');
 const fs = require('fs');
+const redis = require('redis');
+
+let client = redis.createClient();
 
 const router = express.Router();
 
@@ -30,6 +33,7 @@ router.get('/imagenes/:id/edit', (req, res) => {
 
 router.route('/imagenes/:id')
   .get((req, res) => {
+    // client.publish('images', res.locals.imagen.toString());
     res.render('app/imagenes/show');
   })
   .put((req, res) => {
@@ -80,6 +84,14 @@ router.route('/imagenes')
     
     image.save((err) => {
       if(!err){
+
+        const imgJSON = {
+          "id": image._id,
+          "title": image.title,
+          "extension": image.extension
+        };
+
+        client.publish('images', JSON.stringify(imgJSON));
         fs.rename(req.files.archivo.path, `public/images/${image._id}.${extension}`, function (err) {
           if (err) throw err;
           console.log('renamed complete');

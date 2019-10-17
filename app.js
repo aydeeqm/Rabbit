@@ -5,15 +5,26 @@ const session = require('express-session'); // express-session
 const router_app = require('./routes_app');
 const session_middleware = require('./middlewares/session');
 const formidable = require('express-formidable');
-const redis = require('redis')
+const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
+const http = require('http');
+const realtime = require('./realtime');
 
 
 const methodOverride = require('method-override');
 
-const app = express();
-
 let redisClient = redis.createClient()
+
+const app = express();
+const server = http.Server(app);
+
+const sessionMiddleware = session({
+  store: new RedisStore({ client: redisClient }), // hash de options,
+  secret: "super ultra secret word",
+  resave: false,
+});
+
+realtime(server, sessionMiddleware); // compartir sessiones socket.io y express
 
 // Collecciones => tablas
 // Documentos => filas
@@ -23,12 +34,6 @@ app.use(bodyParser.json()); // para peticiones aplicacion/json
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(methodOverride("_method"));
-
-const sessionMiddleware = session({
-  store: new RedisStore({ client: redisClient }), // hash de options,
-  secret: "super ultra secret word",
-  resave: false,
-});
 
 app.use(sessionMiddleware);
 
@@ -88,6 +93,6 @@ app.post('/sessions', (request, response) => {
 app.use('/app', session_middleware);
 app.use('/app', router_app);
 
-app.listen('8080', () => {
+server.listen('8080', () => {
   console.log('servidor prendido');
 });
