@@ -5,12 +5,15 @@ const session = require('express-session'); // express-session
 const router_app = require('./routes_app');
 const session_middleware = require('./middlewares/session');
 const formidable = require('express-formidable');
-const RedisStore = require('connect-redis');
+const redis = require('redis')
+const RedisStore = require('connect-redis')(session);
 
 
 const methodOverride = require('method-override');
 
 const app = express();
+
+let redisClient = redis.createClient()
 
 // Collecciones => tablas
 // Documentos => filas
@@ -21,10 +24,18 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(methodOverride("_method"));
 
-app.use(cookieSession({
+const sessionMiddleware = session({
+  store: new RedisStore({ client: redisClient }), // hash de options,
+  secret: "super ultra secret word",
+  resave: false,
+});
+
+app.use(sessionMiddleware);
+
+/* app.use(cookieSession({
   name: 'session',
   keys: ['llave-1', 'llave-2']
-}));
+})); */
 
 app.use(formidable({ keepExtensions: true }));
 
