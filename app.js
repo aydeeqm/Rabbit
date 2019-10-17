@@ -1,10 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const User = require('./models/user').User;
-const cookieSession = require('cookie-session'); // express-session
+const session = require('express-session'); // express-session
 const router_app = require('./routes_app');
 const session_middleware = require('./middlewares/session');
 const formidable = require('express-formidable');
+const RedisStore = require('connect-redis');
 
 
 const methodOverride = require('method-override');
@@ -64,8 +65,8 @@ app.post('/users', (request, response) => {
 app.post('/sessions', (request, response) => {
   // params: query, fields, callback
   User.findOne({
-    email: request.body.email,
-    password: request.body.password,
+    email: request.fields.email,
+    password: request.fields.password,
   }, function(err, user){
     console.log(user);
     request.session.user_id = user._id;

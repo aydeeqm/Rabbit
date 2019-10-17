@@ -1,7 +1,8 @@
 extends ../../layout.pug
 
 block contenido
-  h1= imagen.title
-  img(src=`/public/images/${imagen._id}.${imagen.extension}`, alt="image")
-  if(typeof imagen.creator !== 'undefined')
-    p Por #{imagen.creator.email}
+  div(class="img-container")
+    h1= imagen.title
+    img(src=`/public/images/${imagen._id}.${imagen.extension}`, alt="image" class="main-img")
+    if(typeof imagen.creator !== 'undefined')
+      p Por #{imagen.creator.email}

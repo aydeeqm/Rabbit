@@ -2,7 +2,7 @@ extends ./layout.pug
 
 block contenido
   div(class="col-md-6 remove-float d-block mx-auto big-top-space")
-    form(action="/sessions", method="post")
+    form(action="/sessions", method="post" enctype="multipart/form-data")
       div(class="form-group")
         label(for="email") Email
         input(type="email", name="email", placeholder="email", id="email", class="form-control")

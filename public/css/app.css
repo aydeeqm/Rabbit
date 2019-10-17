@@ -63,3 +63,25 @@ form.link button[type="submit"] {
   border: none;
   color: rgb(200, 50, 50);
 }
+
+.img-container {
+  margin: 0 auto;
+  max-width: 100%;
+  width: 700px;
+}
+
+.img-container h1,
+.img-container h2 {
+  border-bottom: 1px solid #222222;
+  padding: 15px;
+}
+
+.img-container p {
+  text-align: right;
+  font-size: 1.2em;
+  margin-top: 1em;
+}
+
+img {
+  max-width: 100%;
+}
